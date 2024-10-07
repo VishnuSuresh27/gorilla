@@ -2,20 +2,20 @@
 {"id": "live_simple_1-1-0", "ground_truth": [{"github_star": {"repos": ["ShishirPatil/gorilla,gorilla-llm/gorilla-cli"], "aligned": [true]}}]}
 {"id": "live_simple_2-2-0", "ground_truth": [{"uber.ride": {"loc": ["2020 Addison Street, Berkeley, CA, USA"], "type": ["comfort"], "time": [600]}}]}
 {"id": "live_simple_3-2-1", "ground_truth": [{"uber.ride": {"loc": ["221B Baker Street, Berkeley, CA, USA"], "type": ["plus"], "time": [600]}}]}
-{"id": "live_simple_4-3-0", "ground_truth": [{"get_current_weather": {"location": ["Tel Aviv, Israel"], "unit": ["fahrenheit", "", null]}}]}
-{"id": "live_simple_5-3-1", "ground_truth": [{"get_current_weather": {"location": ["Divin\u00f3polis, MG"], "unit": ["fahrenheit", "", null]}}]}
-{"id": "live_simple_6-3-2", "ground_truth": [{"get_current_weather": {"location": ["San Francisco, CA"], "unit": ["fahrenheit", "", null]}}]}
-{"id": "live_simple_7-3-3", "ground_truth": [{"get_current_weather": {"location": ["Riga, Latvia"], "unit": ["fahrenheit", "", null, "celsius"]}}]}
-{"id": "live_simple_8-3-4", "ground_truth": [{"get_current_weather": {"location": ["London, UK", "London, England"], "unit": ["fahrenheit", "", null]}}]}
-{"id": "live_simple_9-3-5", "ground_truth": [{"get_current_weather": {"location": ["Hyderabad, India"], "unit": ["fahrenheit", "", null]}}]}
+{"id": "live_simple_4-3-0", "ground_truth": [{"get_current_weather": {"location": ["Tel Aviv, Israel"], "unit": ["fahrenheit", ""]}}]}
+{"id": "live_simple_5-3-1", "ground_truth": [{"get_current_weather": {"location": ["Divin\u00f3polis, MG"], "unit": ["fahrenheit", ""]}}]}
+{"id": "live_simple_6-3-2", "ground_truth": [{"get_current_weather": {"location": ["San Francisco, CA"], "unit": ["fahrenheit", ""]}}]}
+{"id": "live_simple_7-3-3", "ground_truth": [{"get_current_weather": {"location": ["Riga, Latvia"], "unit": ["fahrenheit", "", "celsius"]}}]}
+{"id": "live_simple_8-3-4", "ground_truth": [{"get_current_weather": {"location": ["London, UK", "London, England"], "unit": ["fahrenheit", ""]}}]}
+{"id": "live_simple_9-3-5", "ground_truth": [{"get_current_weather": {"location": ["Hyderabad, India"], "unit": ["fahrenheit", ""]}}]}
 {"id": "live_simple_10-3-6", "ground_truth": [{"get_current_weather": {"location": ["Yosemite National Park, CA"], "unit": ["celsius"]}}]}
-{"id": "live_simple_11-3-7", "ground_truth": [{"get_current_weather": {"location": ["Naples, FL"], "unit": ["", "fahrenheit", null]}}]}
+{"id": "live_simple_11-3-7", "ground_truth": [{"get_current_weather": {"location": ["Naples, FL"], "unit": ["", "fahrenheit"]}}]}
 {"id": "live_simple_12-3-8", "ground_truth": [{"get_current_weather": {"location": ["New York, NY"], "unit": ["celsius"]}}]}
 {"id": "live_simple_13-3-9", "ground_truth": [{"get_current_weather": {"location": ["Shanghai, China"], "unit": ["celsius"]}}]}
-{"id": "live_simple_14-3-10", "ground_truth": [{"get_current_weather": {"location": ["Bangkok, Thailand"], "unit": ["", "fahrenheit", null]}}]}
-{"id": "live_simple_15-3-11", "ground_truth": [{"get_current_weather": {"location": ["Chennai, Tamil Nadu"], "unit": ["", "fahrenheit", null]}}]}
-{"id": "live_simple_16-3-12", "ground_truth": [{"get_current_weather": {"location": ["Lang Son, Vietnam"], "unit": ["", "fahrenheit", null]}}]}
-{"id": "live_simple_17-3-13", "ground_truth": [{"get_current_weather": {"location": ["Boston, MA"], "unit": ["", "fahrenheit", null]}}]}
+{"id": "live_simple_14-3-10", "ground_truth": [{"get_current_weather": {"location": ["Bangkok, Thailand"], "unit": ["", "fahrenheit"]}}]}
+{"id": "live_simple_15-3-11", "ground_truth": [{"get_current_weather": {"location": ["Chennai, Tamil Nadu"], "unit": ["", "fahrenheit"]}}]}
+{"id": "live_simple_16-3-12", "ground_truth": [{"get_current_weather": {"location": ["Lang Son, Vietnam"], "unit": ["", "fahrenheit"]}}]}
+{"id": "live_simple_17-3-13", "ground_truth": [{"get_current_weather": {"location": ["Boston, MA"], "unit": ["", "fahrenheit"]}}]}
 {"id": "live_simple_18-3-14", "ground_truth": [{"get_current_weather": {"location": ["Moscow, Russia"], "unit": ["celsius"]}}]}
 {"id": "live_simple_19-3-15", "ground_truth": [{"get_current_weather": {"location": ["Quintana Roo, Mexico"], "unit": ["celsius"]}}]}
 {"id": "live_simple_20-4-0", "ground_truth": [{"change_food": {"food_item": ["burger"], "modification_request": ["no onions, extra cheese"]}}]}
@@ -36,7 +36,7 @@
 {"id": "live_simple_35-12-0", "ground_truth": [{"answer.string": {"answer": ["Sure, here is the answer to the question:\\n\\n**Logistic regression is not present in the text, therefore I cannot answer this question.**"]}}]}
 {"id": "live_simple_36-13-0", "ground_truth": [{"parseAnswer": {"answer": ["The text does not define logistic regression, therefore I cannot answer this question."]}}]}
 {"id": "live_simple_37-14-0", "ground_truth": [{"parseAnswer": {"answer": ["\\n\\nThe text does not define logistic regression, therefore I cannot answer this question."]}}]}
-{"id": "live_simple_38-15-0", "ground_truth": [{"get_current_weather": {"url": ["", "https://api.open-meteo.com/v1/forecast"], "location": ["Yosemite National Park, CA"], "unit": ["fahrenheit", null]}}]}
+{"id": "live_simple_38-15-0", "ground_truth": [{"get_current_weather": {"url": ["", "https://api.open-meteo.com/v1/forecast"], "location": ["Yosemite National Park, CA"], "unit": ["fahrenheit"]}}]}
 {"id": "live_simple_39-16-0", "ground_truth": [{"fetch_weather_data": {"url": ["", "https://api.open-meteo.com/v1/forecast"], "latitude": [37.8651], "longitude": [-119.5383], "units": ["", "metric"], "language": ["", "en"]}}]}
 {"id": "live_simple_40-17-0", "ground_truth": [{"ThinQ_Connect": {"body": [{"airConJobMode": ["AIR_CLEAN"], "windStrength": ["HIGH"], "monitoringEnabled": [true], "airCleanOperationMode": ["POWER_OFF", ""], "powerSaveEnabled": ["", false], "coolTargetTemperature": ["", 24], "targetTemperature": ["", 22]}]}}]}
 {"id": "live_simple_41-17-1", "ground_truth": [{"ThinQ_Connect": {"body": [{"airConJobMode": ["AIR_DRY"], "windStrength": ["MID", ""], "monitoringEnabled": ["", false], "airCleanOperationMode": ["POWER_OFF", ""], "powerSaveEnabled": ["", false], "coolTargetTemperature": ["", 24], "targetTemperature": ["", 22]}]}}]}
@@ -93,8 +93,8 @@
 {"id": "live_simple_93-54-0", "ground_truth": [{"play_artist": {"artist_name": ["K\u00e4\u00e4rij\u00e4"]}}]}
 {"id": "live_simple_94-55-0", "ground_truth": [{"play_song": {"artist_name": ["K\u00e4\u00e4rij\u00e4"], "song_name": ["Cha Cha Cha"]}}]}
 {"id": "live_simple_95-56-0", "ground_truth": [{"process_data": {"data": [[2.5, 3.6, 4.1, 5.2]], "normalize": [true], "categories": [["red", "blue", "green"]], "encoding_type": ["one-hot"], "missing_values": ["", "mean"]}}]}
-{"id": "live_simple_96-57-0", "ground_truth": [{"get_current_weather": {"location": ["Boston, MA"], "unit": ["", "fahrenheit", null]}}]}
-{"id": "live_simple_97-57-1", "ground_truth": [{"get_current_weather": {"location": ["El Gastor, Andalusia"], "unit": ["", "fahrenheit", null]}}]}
+{"id": "live_simple_96-57-0", "ground_truth": [{"get_current_weather": {"location": ["Boston, MA"], "unit": ["", "fahrenheit"]}}]}
+{"id": "live_simple_97-57-1", "ground_truth": [{"get_current_weather": {"location": ["El Gastor, Andalusia"], "unit": ["", "fahrenheit"]}}]}
 {"id": "live_simple_98-58-0", "ground_truth": [{"get_weather_by_coordinates": {"city": ["Chennai"], "lat": [13.0827], "lon": [80.2707]}}]}
 {"id": "live_simple_99-59-0", "ground_truth": [{"connectBluetooth": {"device_name": ["ue boom"], "timeout": ["", 30], "auto_reconnect": ["", false]}}]}
 {"id": "live_simple_100-59-1", "ground_truth": [{"connectBluetooth": {"device_name": ["JBL Flip 4"], "timeout": ["", 30], "auto_reconnect": ["", false]}}]}
