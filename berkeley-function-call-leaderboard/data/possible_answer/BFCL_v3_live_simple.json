@@ -69,6 +69,7 @@
 {"id": "live_simple_68-32-0", "ground_truth": [{"sum": {"a": [5.0], "b": [3.0]}}]}
 {"id": "live_simple_69-33-0", "ground_truth": [{"analysis_api.AnalysisApi.retrieve_analysis": {"project": ["SUPERFANCY"], "component": ["AB1010CD"], "vulnerability": ["ef903ac-893-f00"]}}]}
 {"id": "live_simple_70-34-0", "ground_truth": [{"get_sensor_alerts": {"perPage": [10], "startingAfter": ["", null], "endingBefore": ["", null], "t0": ["", null], "t1": [""], "networkId": ["", []], "timespan": [""], "sensorSerial": ["Q3CC-CRT3-SZ2G"], "triggerMetric": ["", null]}}]}
+{"id": "live_simple_71-35-0", "ground_truth": [{"extract_parameters_v1": {"demographics": [["millennials"]], "targets": [["brand:Apple"]], "metrics": ["usage frequency"], "country": ["", null], "min_date": ["2022-07-01"], "max_date": ["", null], "interval": ["", null]}}]}
 {"id": "live_simple_72-36-0", "ground_truth": [{"detect_beats_and_filter": {"capture_percentage": [50], "confidence_window_size": [0.5]}}]}
 {"id": "live_simple_73-36-1", "ground_truth": [{"detect_beats_and_filter": {"capture_percentage": [90], "confidence_window_size": [0.25]}}]}
 {"id": "live_simple_74-36-2", "ground_truth": [{"detect_beats_and_filter": {"capture_percentage": [70], "confidence_window_size": [0.8]}}]}
@@ -138,26 +139,26 @@
 {"id": "live_simple_138-91-0", "ground_truth": [{"reschedule": {"identifier": ["Bob-123"], "dateOrTime": ["2023-11-01T18:00:00"], "timezone": ["Europe/London"]}}]}
 {"id": "live_simple_139-92-0", "ground_truth": [{"requests.get": {"url": ["https://192.168.1.1/sedgeapi/v1/cisco-nir/api/api/v1/anomalies/summary"], "params": [{"fabric": ["network222"], "insightsGroup": ["", "defaultInsightsGroup"]}]}}]}
 {"id": "live_simple_140-93-0", "ground_truth": [{"greet_partner": {"user_name": ["Emily"], "partner_name": ["Jeff"], "relationship": ["husband"]}}]}
-{"id": "live_simple_141-94-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker --version"]}}]}
-{"id": "live_simple_142-94-1", "ground_truth": [{"cmd_controller.execute": {"command": ["dir Desktop"]}}]}
-{"id": "live_simple_143-95-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker ps"]}}]}
-{"id": "live_simple_144-95-1", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM firefox.exe", "taskkill /IM firefox.exe /F"]}}]}
-{"id": "live_simple_145-95-2", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"]}}]}
-{"id": "live_simple_146-95-3", "ground_truth": [{"cmd_controller.execute": {"command": ["start https://huggingface.co"]}}]}
-{"id": "live_simple_147-95-4", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM timer.exe"]}}]}
-{"id": "live_simple_148-95-5", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"]}}]}
-{"id": "live_simple_149-95-6", "ground_truth": [{"cmd_controller.execute": {"command": ["echo hi"]}}]}
-{"id": "live_simple_150-95-7", "ground_truth": [{"cmd_controller.execute": {"command": ["shutdown /s /t 0"]}}]}
-{"id": "live_simple_151-95-8", "ground_truth": [{"cmd_controller.execute": {"command": ["netsh wlan disconnect"]}}]}
-{"id": "live_simple_152-95-9", "ground_truth": [{"cmd_controller.execute": {"command": ["dir D:\\ && echo testing.txt"]}}]}
-{"id": "live_simple_153-95-10", "ground_truth": [{"cmd_controller.execute": {"command": ["del \"%userprofile%\\Desktop\\putty.lnk\""]}}]}
-{"id": "live_simple_154-95-11", "ground_truth": [{"cmd_controller.execute": {"command": ["start https://www.youtube.com/watch?v=dQw4w9WgXcQ"]}}]}
-{"id": "live_simple_155-95-12", "ground_truth": [{"cmd_controller.execute": {"command": ["date /t", "echo %date%"]}}]}
-{"id": "live_simple_156-95-13", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"]}}]}
-{"id": "live_simple_157-95-14", "ground_truth": [{"cmd_controller.execute": {"command": ["echo %time%"]}}]}
-{"id": "live_simple_158-95-15", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /IM code.exe /F", "taskkill /F /IM code.exe"]}}]}
-{"id": "live_simple_159-95-16", "ground_truth": [{"cmd_controller.execute": {"command": ["timeout 10"]}}]}
-{"id": "live_simple_160-95-17", "ground_truth": [{"cmd_controller.execute": {"command": ["start microsoft.windows.camera:"]}}]}
+{"id": "live_simple_141-94-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker --version"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_142-94-1", "ground_truth": [{"cmd_controller.execute": {"command": ["dir Desktop"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_143-95-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker ps"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_144-95-1", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM firefox.exe", "taskkill /IM firefox.exe /F"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_145-95-2", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_146-95-3", "ground_truth": [{"cmd_controller.execute": {"command": ["start https://huggingface.co"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_147-95-4", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM timer.exe"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_148-95-5", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_149-95-6", "ground_truth": [{"cmd_controller.execute": {"command": ["echo hi"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_150-95-7", "ground_truth": [{"cmd_controller.execute": {"command": ["shutdown /s /t 0"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_151-95-8", "ground_truth": [{"cmd_controller.execute": {"command": ["netsh wlan disconnect"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_152-95-9", "ground_truth": [{"cmd_controller.execute": {"command": ["dir D:\\ && echo testing.txt"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_153-95-10", "ground_truth": [{"cmd_controller.execute": {"command": ["del \"%userprofile%\\Desktop\\putty.lnk\""], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_154-95-11", "ground_truth": [{"cmd_controller.execute": {"command": ["start https://www.youtube.com/watch?v=dQw4w9WgXcQ"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_155-95-12", "ground_truth": [{"cmd_controller.execute": {"command": ["date /t", "echo %date%"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_156-95-13", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_157-95-14", "ground_truth": [{"cmd_controller.execute": {"command": ["echo %time%"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_158-95-15", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /IM code.exe /F", "taskkill /F /IM code.exe"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_159-95-16", "ground_truth": [{"cmd_controller.execute": {"command": ["timeout 10"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_160-95-17", "ground_truth": [{"cmd_controller.execute": {"command": ["start microsoft.windows.camera:"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_161-96-0", "ground_truth": [{"get_items": {"items": [["Blue square", "Red square", "Green square", "Yellow square", "Superman logo", "Iron Man logo", "Hulk logo", "Batman logo", "Fist", "Bat", "Face mask", "Outline"]]}}]}
 {"id": "live_simple_162-96-1", "ground_truth": [{"get_items": {"items": [["Red and blue circle logo", "Red and yellow circle logo", "Green circle logo", "Black circle logo"]]}}]}
 {"id": "live_simple_163-96-2", "ground_truth": [{"get_items": {"items": [["red logo", "yellow rectangle", "white text", "Lego characters", "movie title", "release date", "actor names"]]}}]}
@@ -249,7 +250,6 @@
 {"id": "live_simple_249-131-0", "ground_truth": [{"chat_with_friend": {"user_message": ["Hey bunny, How are you doing"]}}]}
 {"id": "live_simple_250-132-0", "ground_truth": [{"uber.eat.order": {"restaurants": ["McDonald's", "McDonalds", "McDonald"], "items": [["Big Mac", "McFlurry"]], "quantities": [[2, 1]]}}]}
 {"id": "live_simple_251-133-0", "ground_truth": [{"flight.status.check": {"flight_id": ["6E123"], "passenger_name": ["Karan"], "ticket_number": ["IND4567"]}}]}
-{"id": "live_simple_252-134-0", "ground_truth": [{"flight.status.check": {"airlines": ["Indigo"], "person_name": ["Karan LNU"], "ticket_number": ["IND4567"]}}]}
 {"id": "live_simple_252-134-0", "ground_truth": [{"flight.status.check": {"airlines": ["Indigo"], "person_name": ["Karan LNU"], "ticket_number": ["IND4567"]}}]}
 {"id": "live_simple_253-135-0", "ground_truth": [{"uber.eat.order": {"restaurants": ["McDonald's", "McDonalds"], "items": [["burgers", "chicken wings"], ["burger", "chicken wing"]], "quantities": [[5, 6]]}}]}
 {"id": "live_simple_254-136-0", "ground_truth": [{"user.mandates": {"user_id": ["U123"], "status": ["pending"]}}]}
