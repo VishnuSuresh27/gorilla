@@ -9,7 +9,7 @@
 {"id": "live_simple_8-3-4", "ground_truth": [{"get_current_weather": {"location": ["London, UK", "London, England"], "unit": ["fahrenheit", ""]}}]}
 {"id": "live_simple_9-3-5", "ground_truth": [{"get_current_weather": {"location": ["Hyderabad, India"], "unit": ["fahrenheit", ""]}}]}
 {"id": "live_simple_10-3-6", "ground_truth": [{"get_current_weather": {"location": ["Yosemite National Park, CA"], "unit": ["celsius"]}}]}
-{"id": "live_simple_11-3-7", "ground_truth": [{"get_current_weather": {"location": ["Naples, FL"], "unit": ["", "fahrenheit"]}}]}
+{"id": "live_simple_11-3-7", "ground_truth": [{"get_current_weather": {"location": ["Naples, FL", "Naples, Florida"], "unit": ["", "fahrenheit"]}}]}
 {"id": "live_simple_12-3-8", "ground_truth": [{"get_current_weather": {"location": ["New York, NY"], "unit": ["celsius"]}}]}
 {"id": "live_simple_13-3-9", "ground_truth": [{"get_current_weather": {"location": ["Shanghai, China"], "unit": ["celsius"]}}]}
 {"id": "live_simple_14-3-10", "ground_truth": [{"get_current_weather": {"location": ["Bangkok, Thailand"], "unit": ["", "fahrenheit"]}}]}
@@ -142,7 +142,7 @@
 {"id": "live_simple_141-94-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker --version"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_142-94-1", "ground_truth": [{"cmd_controller.execute": {"command": ["dir Desktop"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_143-95-0", "ground_truth": [{"cmd_controller.execute": {"command": ["docker ps"], "unit": ["", "N/A"]}}]}
-{"id": "live_simple_144-95-1", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM firefox.exe", "taskkill /IM firefox.exe /F"], "unit": ["", "N/A"]}}]}
+{"id": "live_simple_144-95-1", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM firefox.exe", "taskkill /IM firefox.exe /F", "taskkill /IM firefox.exe"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_145-95-2", "ground_truth": [{"cmd_controller.execute": {"command": ["dir C:\\"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_146-95-3", "ground_truth": [{"cmd_controller.execute": {"command": ["start https://huggingface.co"], "unit": ["", "N/A"]}}]}
 {"id": "live_simple_147-95-4", "ground_truth": [{"cmd_controller.execute": {"command": ["taskkill /F /IM timer.exe"], "unit": ["", "N/A"]}}]}
