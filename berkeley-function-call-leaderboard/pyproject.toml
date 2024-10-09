@@ -29,6 +29,7 @@ dependencies = [
     "transformers==4.46.0",
     "cohere==5.5.8",
     "google-cloud-aiplatform==1.65.0",
+    "pathlib",
 ]
 
 [tool.setuptools.packages.find]
