@@ -28,7 +28,7 @@ dependencies = [
     "anthropic==0.37.1",
     "transformers==4.46.0",
     "cohere==5.5.8",
-    "google-cloud-aiplatform==1.65.0",
+    "google-cloud-aiplatform>=1.70.0",
     "pathlib",
 ]
 
