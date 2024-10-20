@@ -1,21 +1,24 @@
-from bfcl.eval_checker.constant import REAL_TIME_MATCH_ALLOWED_DIFFERENCE
-from bfcl.eval_checker.executable_eval.custom_exception import NoAPIKeyError
+import json
+import time
+from functools import lru_cache
 
 import requests  # Do not remove this import even though it seems to be unused. It's used in the executable_checker_rest function.
-import time
-import json
-
-
-#### Constants ####
-EVAL_GROUND_TRUTH_PATH = (
-    "./executable_eval/data/rest-eval-response_v5.jsonl"  # Ground truth file for v5 for rest execution
+from bfcl.eval_checker.constant import (
+    REAL_TIME_MATCH_ALLOWED_DIFFERENCE,
+    REST_EVAL_GROUND_TRUTH_PATH,
 )
-with open(EVAL_GROUND_TRUTH_PATH, "r") as f:
-    EVAL_GROUND_TRUTH = f.readlines()
+from bfcl.eval_checker.executable_eval.custom_exception import NoAPIKeyError
 
+# Load the ground truth data for the `rest` test category
+@lru_cache(maxsize=1)  # cache the result, effectively loading data once
+def load_eval_ground_truth():
+    with open(REST_EVAL_GROUND_TRUTH_PATH, "r") as f:
+        return f.readlines()
 
 #### Main function ####
 def executable_checker_rest(func_call, idx):
+    EVAL_GROUND_TRUTH = load_eval_ground_truth()
+    
     if "https://geocode.maps.co" in func_call:
         time.sleep(2)
     if "requests_get" in func_call:

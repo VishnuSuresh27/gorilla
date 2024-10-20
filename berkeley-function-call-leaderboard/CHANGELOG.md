@@ -2,6 +2,62 @@
 
 All notable changes to the Berkeley Function Calling Leaderboard will be documented in this file.
 
+- [Oct 10, 2024] [#683](https://github.com/ShishirPatil/gorilla/pull/683): Bug fix for the multi turn categories for ambiguity in action intention and function parameters.
+- [Oct 16, 2024] [#701](https://github.com/ShishirPatil/gorilla/pull/701): Bug fix the multi turn function source code for `TravelAPI`.
+- [Oct 16, 2024] [#696](https://github.com/ShishirPatil/gorilla/pull/696): Add the following new models to the leaderboard:
+  - `google/gemma-2-2b-it`
+  - `google/gemma-2-9b-it`
+  - `google/gemma-2-27b-it`
+- [Oct 16, 2024] [#661](https://github.com/ShishirPatil/gorilla/pull/661): Bug fix in the dataset and possible answers.
+  - Irrelevance: 1 affected
+  - Parallel Multiple: 2 affected
+  - Live Simple: 104 affected
+  - Live Multiple: 547 affected
+  - Live Parallel: 11 affected
+  - Live Parallel Multiple: 17 affected
+- [Oct 11, 2024] [#667](https://github.com/ShishirPatil/gorilla/pull/667): Add the following new models to the leaderboard:
+  - `MadeAgents/Hammer2.0-7b`
+  - `MadeAgents/Hammer2.0-3b`
+  - `MadeAgents/Hammer2.0-1.5b`
+  - `MadeAgents/Hammer2.0-0.5b`
+- [Oct 10, 2024] [#621](https://github.com/ShishirPatil/gorilla/pull/621), [#675](https://github.com/ShishirPatil/gorilla/pull/675): Add a basic command-line interface for ease of use.
+- [Oct 5, 2024] [#633](https://github.com/ShishirPatil/gorilla/pull/633): Add new model `openbmb/MiniCPM3-4B` to the leaderboard.
+- [Oct 5, 2024] [#642](https://github.com/ShishirPatil/gorilla/pull/642): Add the following new models to the leaderboard:
+  - `Qwen/Qwen2.5-7B-Instruct`
+  - `Qwen/Qwen2.5-1.5B-Instruct`
+  - `Qwen/Qwen2-7B-Instruct`
+  - `Qwen/Qwen2-1.5B-Instruct`
+- [Oct 4, 2024] [#653](https://github.com/ShishirPatil/gorilla/pull/653): Add new model `Team-ACE/ToolACE-8B` to the leaderboard.
+- [Oct 4, 2024] [#671](https://github.com/ShishirPatil/gorilla/pull/671): Speed up locally-hosted model's inference process by parallelizing the inference requests.
+- [Sept 27, 2024] [#640](https://github.com/ShishirPatil/gorilla/pull/640): Add the following new models to the leaderboard:
+  - `microsoft/Phi-3.5-mini-instruct`
+  - `microsoft/Phi-3-medium-128k-instruct`
+  - `microsoft/Phi-3-medium-4k-instruct`
+  - `microsoft/Phi-3-small-128k-instruct`
+  - `microsoft/Phi-3-small-8k-instruct`
+  - `microsoft/Phi-3-mini-128k-instruct`
+  - `microsoft/Phi-3-mini-4k-instruct`
+- [Sept 25, 2024] [#660](https://github.com/ShishirPatil/gorilla/pull/660): Bug fix in `parse_nested_value` function to handle nested dictionary values properly. 
+- [Sept 24, 2024] [#657](https://github.com/ShishirPatil/gorilla/pull/657): Add the following new models to the leaderboard:
+  - `meta-llama/Llama-3.2-1B-Instruct`
+  - `meta-llama/Llama-3.2-1B-Instruct-FC`
+  - `meta-llama/Llama-3.2-3B-Instruct`
+  - `meta-llama/Llama-3.2-3B-Instruct-FC`
+  - `meta-llama/Llama-3.1-8B-Instruct`
+  - `meta-llama/Llama-3.1-8B-Instruct-FC`
+  - `meta-llama/Llama-3.1-70B-Instruct`
+  - `meta-llama/Llama-3.1-70B-Instruct-FC`
+- [Sept 24, 2024] [#648](https://github.com/ShishirPatil/gorilla/pull/648): Add the following new models to the leaderboard:
+  - `gemini-1.5-pro-002`
+  - `gemini-1.5-pro-002-FC`
+  - `gemini-1.5-pro-001`
+  - `gemini-1.5-pro-001-FC`
+  - `gemini-1.5-flash-002`
+  - `gemini-1.5-flash-002-FC`
+  - `gemini-1.5-flash-001`
+  - `gemini-1.5-flash-001-FC`
+  - `gemini-1.0-pro-002`
+  - `gemini-1.0-pro-002-FC`
 - [Sept 19, 2024] [#644](https://github.com/ShishirPatil/gorilla/pull/644): BFCL V3 release:
   - Introduce new multi-turn dataset and state-based evaluation metric
   - Separate ast_checker and executable_checker for readability
