@@ -21,6 +21,7 @@ class TwitterAPI:
         self.comments: Dict[int, List[Dict[str, str]]]
         self.retweets: Dict[str, List[int]]
         self.following_list: List[str]
+        # tweet_counter is used to assign unique IDs to tweets, it might not be the same as the length of the tweets list for different scenarios
         self.tweet_counter: int
 
     def _load_scenario(self, scenario: dict, long_context=False) -> None:
@@ -241,7 +242,7 @@ class TwitterAPI:
         Search for tweets containing a specific keyword.
 
         Args:
-            keyword (str): Keyword to search for in tweets.
+            keyword (str): Keyword to search for in the content of the tweets.
         Returns:
             matching_tweets (List[Dict]): List of dictionaries, each containing tweet information.
         """
