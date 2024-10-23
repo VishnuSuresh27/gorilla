@@ -1,16 +1,28 @@
 from typing import Dict, List, Optional, Union
 
+from copy import deepcopy
+
+DEFAULT_STATE = {
+    "username": "john",
+    "password": "john123",
+    "authenticated": False,
+    "tweets": {},
+    "comments": {},
+    "retweets": {},
+    "following_list": ["alice", "bob"],
+    "tweet_counter": 1,
+}
 
 class TwitterAPI:
     def __init__(self):
-        self.username: str = "john"
-        self.password: str = "john1234"
-        self.authenticated: bool = False
-        self.tweets: Dict[int, Dict[str, Union[int, str, List[str]]]] = {}
-        self.comments: Dict[int, List[Dict[str, str]]] = {}
-        self.retweets: Dict[str, List[int]] = {}
-        self.following_list: List[str] = ["alice", "bob"]
-        self.tweet_counter: int = 1
+        self.username: str
+        self.password: str
+        self.authenticated: bool
+        self.tweets: Dict[int, Dict[str, Union[int, str, List[str]]]]
+        self.comments: Dict[int, List[Dict[str, str]]]
+        self.retweets: Dict[str, List[int]]
+        self.following_list: List[str]
+        self.tweet_counter: int
 
     def _load_scenario(self, scenario: dict, long_context=False) -> None:
         """
@@ -18,14 +30,15 @@ class TwitterAPI:
         Args:
             scenario (dict): A dictionary containing Twitter data.
         """
-        self.username = scenario.get("username", "john")
-        self.password = scenario.get("password", "john1234")
-        self.authenticated = scenario.get("authenticated", False)
-        self.tweets = scenario.get("tweets", {})
-        self.comments = scenario.get("comments", {})
-        self.retweets = scenario.get("retweets", {})
-        self.following_list = scenario.get("following_list", ["alice", "bob"])
-        self.tweet_counter = scenario.get("tweet_counter", 1)
+        DEFAULT_STATE_COPY = deepcopy(DEFAULT_STATE)
+        self.username = scenario.get("username", DEFAULT_STATE_COPY["username"])
+        self.password = scenario.get("password", DEFAULT_STATE_COPY["password"])
+        self.authenticated = scenario.get("authenticated", DEFAULT_STATE_COPY["authenticated"])
+        self.tweets = scenario.get("tweets", DEFAULT_STATE_COPY["tweets"])
+        self.comments = scenario.get("comments", DEFAULT_STATE_COPY["comments"])
+        self.retweets = scenario.get("retweets", DEFAULT_STATE_COPY["retweets"])
+        self.following_list = scenario.get("following_list", DEFAULT_STATE_COPY["following_list"])
+        self.tweet_counter = scenario.get("tweet_counter", DEFAULT_STATE_COPY["tweet_counter"])
 
     def authenticate_twitter(self, username: str, password: str) -> Dict[str, bool]:
         """

@@ -3,7 +3,20 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 from .long_context import BOOKING_RECORD_EXTENSION, CREDIT_CARD_EXTENSION
+from copy import deepcopy
 
+DEFAULT_STATE = {
+    "random_seed": 141053,
+    "credit_card_list": {},
+    "booking_record": {},
+    "access_token": None,
+    "token_type": None,
+    "token_expires_in": None,
+    "token_scope": None,
+    "user_first_name": None,
+    "user_last_name": None,
+    "budget_limit": None,
+}
 
 class TravelAPI:
     # Adapted from source : https://developer.concur.com/api-reference/
@@ -29,16 +42,17 @@ class TravelAPI:
         Args:
             scenario (Dict[str, str]): The scenario to load
         """
-        self._random = random.Random((scenario.get("random_seed", 141053)))
-        self.credit_card_list = scenario.get("credit_card_list", {})
-        self.booking_record = scenario.get("booking_record", {})
-        self.access_token = scenario.get("access_token", None)
-        self.token_type = scenario.get("token_type", None)
-        self.token_expires_in = scenario.get("token_expires_in", None)
-        self.token_scope = scenario.get("token_scope", None)
-        self.user_first_name = scenario.get("user_first_name", None)
-        self.user_last_name = scenario.get("user_last_name", None)
-        self.budget_limit = scenario.get("budget_limit", None)
+        DEFAULT_STATE_COPY = deepcopy(DEFAULT_STATE)
+        self._random = random.Random((scenario.get("random_seed", DEFAULT_STATE_COPY["random_seed"])))
+        self.credit_card_list = scenario.get("credit_card_list", DEFAULT_STATE_COPY["credit_card_list"])
+        self.booking_record = scenario.get("booking_record", DEFAULT_STATE_COPY["booking_record"])
+        self.access_token = scenario.get("access_token", DEFAULT_STATE_COPY["access_token"])
+        self.token_type = scenario.get("token_type", DEFAULT_STATE_COPY["token_type"])
+        self.token_expires_in = scenario.get("token_expires_in", DEFAULT_STATE_COPY["token_expires_in"])
+        self.token_scope = scenario.get("token_scope", DEFAULT_STATE_COPY["token_scope"])
+        self.user_first_name = scenario.get("user_first_name", DEFAULT_STATE_COPY["user_first_name"])
+        self.user_last_name = scenario.get("user_last_name", DEFAULT_STATE_COPY["user_last_name"])
+        self.budget_limit = scenario.get("budget_limit", DEFAULT_STATE_COPY["budget_limit"])
         self.long_context = long_context
 
         if self.long_context:
