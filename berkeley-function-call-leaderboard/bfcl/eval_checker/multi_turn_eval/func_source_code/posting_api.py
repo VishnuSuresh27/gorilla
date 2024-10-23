@@ -9,7 +9,7 @@ DEFAULT_STATE = {
     "comments": {},
     "retweets": {},
     "following_list": ["alice", "bob"],
-    "tweet_counter": 1,
+    "tweet_counter": 0,
 }
 
 class TwitterAPI:
