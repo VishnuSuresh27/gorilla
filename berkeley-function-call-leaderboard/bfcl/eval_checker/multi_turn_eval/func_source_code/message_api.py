@@ -1,6 +1,7 @@
 import random
 from typing import Dict, List, Optional, Union
 from copy import deepcopy
+
 DEFAULT_STATE = {
     "generated_ids": set(),
     "user_count": 4,
@@ -65,13 +66,12 @@ class MessageAPI:
         """
         Initialize the MessageAPI with a workspace ID.
         """
-        DEFAULT_STATE_COPY = deepcopy(DEFAULT_STATE)
-        self.generated_ids = DEFAULT_STATE_COPY["generated_ids"]
-        self.user_count: int = DEFAULT_STATE_COPY["user_count"]
-        self.user_map: Dict[str, str] = DEFAULT_STATE_COPY["user_map"]
-        self.inbox: Dict[int, Dict[str, Union[str, int]]] = DEFAULT_STATE_COPY["inbox"]
-        self.message_count: int = DEFAULT_STATE_COPY["message_count"]
-        self.current_user: Optional[str] = DEFAULT_STATE_COPY["current_user"]
+        self.generated_ids: set
+        self.user_count: int
+        self.user_map: Dict[str, str]
+        self.inbox: Dict[int, Dict[str, Union[str, int]]]
+        self.message_count: int
+        self.current_user: Optional[str]
 
     def _load_scenario(self, scenario: dict, long_context=False) -> None:
         """
@@ -82,9 +82,12 @@ class MessageAPI:
         """
         DEFAULT_STATE_COPY = deepcopy(DEFAULT_STATE)
         self._random = random.Random((scenario.get("random_seed", 200191)))
+        self.generated_ids = scenario.get("generated_ids", DEFAULT_STATE_COPY["generated_ids"])
         self.user_count = scenario.get("user_count", DEFAULT_STATE_COPY["user_count"])
-        self.current_user = scenario.get("current_user", DEFAULT_STATE_COPY["current_user"])
         self.user_map = scenario.get("user_map", DEFAULT_STATE_COPY["user_map"])
+        self.inbox = scenario.get("inbox", DEFAULT_STATE_COPY["inbox"])
+        self.message_count = scenario.get("message_count", DEFAULT_STATE_COPY["message_count"])
+        self.current_user = scenario.get("current_user", DEFAULT_STATE_COPY["current_user"])
 
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, MessageAPI):
