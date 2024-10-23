@@ -28,10 +28,15 @@ for ground_truth_entry, test_entry in zip(ground_truth_data, dataset_data):
             continue
         
         initial_config = initial_configs[class_name]
-        
-        for 
+        temp = {str(class_name): []}
+        for key in initial_config.keys():
+            if key not in INITIAL_CONFOG_MAPPING[class_name]:
+                temp[str(class_name)].append(key)
+        if len(temp[str(class_name)]) > 0:
+            entry_result["affected_classes"].append(temp)
     entry_result.update(test_entry)
     entry_result["possible_answer"] = ground_truth_entry["ground_truth"]
-    result.append(entry_result)
+    if len(entry_result["affected_classes"]) > 0:
+        result.append(entry_result)
 
-write_list_of_dicts_to_file("ground_truth_result.json", result)
+write_list_of_dicts_to_file("initial_config_result.json", result)
