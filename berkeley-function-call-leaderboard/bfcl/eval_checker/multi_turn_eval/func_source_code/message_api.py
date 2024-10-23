@@ -69,7 +69,7 @@ class MessageAPI:
         self.generated_ids: set
         self.user_count: int
         self.user_map: Dict[str, str]
-        self.inbox: Dict[int, Dict[str, Union[str, int]]]
+        self.inbox: List[Dict[str, List]]
         self.message_count: int
         self.current_user: Optional[str]
 
@@ -180,11 +180,7 @@ class MessageAPI:
         # Generate a unique message ID
         message_id = self.generate_id()
         # Store the message in the inbox
-        self.inbox[message_id] = {
-            "sender_id": self.current_user,
-            "receiver_id": receiver_id,
-            "message": message,
-        }
+        self.inbox.append({receiver_id: [message]})
         self.message_count += 1
         return {
             "sent_status": True,
@@ -193,10 +189,10 @@ class MessageAPI:
         }
 
     def delete_message(
-        self, receiver_id: str, message_id: int
+        self, receiver_id: str
     ) -> Dict[str, Union[bool, str]]:
         """
-        Delete a message sent to a user.
+        Delete the latest message sent to a receiver.
         Args:
             receiver_id (str): User ID of the user to send the message to.
             message_id (int): ID of the message to be deleted.
@@ -208,50 +204,17 @@ class MessageAPI:
         if not self.current_user:
             return {"error": "No user is currently logged in."}
         # Check if the message exists in the inbox
-        if message_id not in self.inbox:
-            return {"error": f"Message ID {message_id} not found."}
         # Ensure the current user is either the sender or receiver of the message
-        message_data = self.inbox[message_id]
-        if (
-            message_data["sender_id"] != self.current_user
-            and message_data["receiver_id"] != self.current_user
-        ):
-            return {"error": "You do not have permission to delete this message."}
-        # Check if the sender and receiver match the input arguments
-        if (
-            message_data["sender_id"] != self.current_user
-            or message_data["receiver_id"] != receiver_id
-        ):
-            return {
-                "error": f"Message ID {message_id} does not match the provided sender and receiver."
-            }
-        # If everything checks out, delete the message
-        del self.inbox[message_id]
-        return {
-            "deleted_status": True,
-            "message_id": message_id,
-            "message": f"Message ID {message_id} deleted successfully.",
-        }
-
-    def view_messages_received(self) -> Dict[str, Union[Dict[str, List[str]], str]]:
-        """
-        View all messages sent to the current user.
-
-        Returns:
-            messages (Dict[str, List[str]]): Dictionary of senders and their messages sent to the current user.
-        """
-        if not self.current_user:
-            return {"error": "No user is currently logged in."}
-        # Dictionary to collect messages grouped by sender
-        received_messages = {}
-        # Loop through the inbox and collect messages sent to the current user
-        for message_id, message_data in self.inbox.items():
-            if message_data["receiver_id"] == self.current_user:
-                sender = message_data["sender_id"]
-                if sender not in received_messages:
-                    received_messages[sender] = []
-                received_messages[sender].append(message_data["message"])
-        return {"messages": received_messages}
+        for message in self.inbox[::-1]:
+            receiver, _ = list(message.items())[0]
+            if receiver == receiver_id:
+                self.inbox.remove(message)
+                return {
+                    "deleted_status": True,
+                    "message_id": receiver,
+                    "message": f"Receiver {receiver_id}'s first message deleted successfully.",
+                }
+        return {"error": f"Receiver ID {receiver_id} not found."}    
 
     def view_messages_sent(self) -> Dict[str, Union[Dict[str, List[str]], str]]:
         """
@@ -265,12 +228,9 @@ class MessageAPI:
         # Dictionary to collect messages grouped by receiver
         sent_messages = {}
         # Loop through the inbox and collect messages sent by the current user
-        for message_id, message_data in self.inbox.items():
-            if message_data["sender_id"] == self.current_user:
-                receiver = message_data["receiver_id"]
-                if receiver not in sent_messages:
-                    sent_messages[receiver] = []
-                sent_messages[receiver].append(message_data["message"])
+        for message in self.inbox:
+            receiver, message_content = list(message.items())[0]
+            sent_messages[receiver].append(message_content)
         return {"messages": sent_messages}
 
     def add_contact(self, user_name: str) -> Dict[str, Union[bool, str]]:
