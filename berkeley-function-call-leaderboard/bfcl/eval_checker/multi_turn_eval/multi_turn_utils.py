@@ -88,7 +88,7 @@ def execute_multi_turn_func_call(
         elif type(execution_results[index]) == dict:
             # Some function returns a object instance, which is not serializable
             try:
-                execution_results[index] = json.dumps(execution_results[index])
+                json.dumps(execution_results[index])
             except:
                 execution_results[index] = str(execution_results[index])
         else:
