@@ -1,6 +1,6 @@
 from datetime import datetime, time
 from typing import Dict, List, Optional, Union
-
+from copy import deepcopy
 from .long_context import (
     AUTOMOBILE_EXTENSION,
     MA_5_EXTENSION,
