@@ -190,7 +190,6 @@ class GorillaFileSystem:
         DEFAULT_STATE_COPY = deepcopy(DEFAULT_STATE)
         self.long_context = long_context
         self.root = DEFAULT_STATE_COPY["root"]
-        self.long_context = long_context
         if "root" in scenario:
             root_dir = Directory(list(scenario["root"].keys())[0], None)
             self.root = self._load_directory(
