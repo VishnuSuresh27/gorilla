@@ -11,25 +11,20 @@ DEFAULT_STATE = {
         "Catherine": "USR003",
         "Daniel": "USR004",
     },
-    "inbox": {
-        1: {
-            "sender_id": "USR001",
+    "inbox": [
+        {
             "receiver_id": "USR002",
             "message": "My name is Alice. I want to connect.",
         },
-        2: {
-            "sender_id": "USR001",
+        {
             "receiver_id": "USR003",
             "message": "Could you upload the file?",
         },
-        3: {
-            "sender_id": "USR001",
+        {
             "receiver_id": "USR004",
             "message": "Could you upload the file?",
         },
-        4: {"sender_id": "USR001", "receiver_id": "USR002", "message": "I am busy."},
-        5: {"sender_id": "USR001", "receiver_id": "USR002", "message": "I am on leave."},
-    },
+    ],
     "message_count": 0,
     "current_user": None,
 }
@@ -54,7 +49,6 @@ class MessageAPI:
         get_user_id(user: str): Get the user ID for a given username.
         login(user_id: str): Log in a user.
         send_message(receiver_id: str, message: str): Send a message to another user.
-        view_messages_received(): View messages received by the current user.
         view_messages_sent(): View messages sent by the current user.
         delete_message(receiver_id: str, message_index: int): Delete a sent message.
         add_contact(name: str, user_id: str): Add a new contact to the workspace.
