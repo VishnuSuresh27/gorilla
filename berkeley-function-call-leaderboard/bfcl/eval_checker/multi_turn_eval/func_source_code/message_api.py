@@ -265,7 +265,6 @@ class MessageAPI:
             keyword (str): The keyword to search for in messages.
         Returns:
             results (List[Dict[str, Union[str, List[str]]]]): List of dictionaries containing matching messages.
-                Each dictionary has keys:
                 - sender_id (str): The ID of the user who sent the message.
                 - receiver_id (str): The ID of the user who received the message.
                 - messages (List[str]): List of messages containing the keyword.
@@ -275,21 +274,16 @@ class MessageAPI:
         keyword_lower = keyword.lower()
         results = []
         # Iterate through the inbox to search for the keyword in messages
-        for message_id, message_data in self.inbox.items():
-            # Check if the current user is either the sender or receiver
-            if (
-                message_data["sender_id"] == self.current_user
-                or message_data["receiver_id"] == self.current_user
-            ):
-                # Check if the message contains the keyword (case-insensitive)
-                if keyword_lower in message_data["message"].lower():
-                    results.append(
-                        {
-                            "sender_id": message_data["sender_id"],
-                            "receiver_id": message_data["receiver_id"],
-                            "message": message_data["message"],
-                        }
-                    )
+        # for message_id, message_data in self.inbox.items():
+        for message_data in self.inbox:
+            receiver_id, message_content = list(message_data.items())[0]
+            if keyword_lower in message_content.lower():
+                results.append(
+                    {
+                        "receiver_id": receiver_id,
+                        "message": message_content,
+                    }
+                )
         return {"results": results}
 
     def get_message_stats(self) -> Dict[str, Union[Dict[str, int], str]]:
@@ -307,17 +301,13 @@ class MessageAPI:
         received_count = 0
         contacts = set()
         # Loop through the inbox to calculate stats
-        for message_id, message_data in self.inbox.items():
-            if message_data["sender_id"] == self.current_user:
-                sent_count += 1
-                contacts.add(message_data["receiver_id"])
-            if message_data["receiver_id"] == self.current_user:
-                received_count += 1
-                contacts.add(message_data["sender_id"])
+        for message_data in self.inbox:
+            receiver_id, message_content = list(message_data.items())[0]
+            received_count += 1
+            contacts.add(receiver_id)
         total_contacts = len(contacts)
         return {
             "stats": {
-                "sent_count": sent_count,
                 "received_count": received_count,
                 "total_contacts": total_contacts,
             }
