@@ -5,7 +5,7 @@ DEFAULT_STATE = {
     "username": "john",
     "password": "john123",
     "authenticated": False,
-    "tweets": [],
+    "tweets": {},
     "comments": {},
     "retweets": {},
     "following_list": ["alice", "bob"],
@@ -17,7 +17,7 @@ class TwitterAPI:
         self.username: str
         self.password: str
         self.authenticated: bool
-        self.tweets: List[str]
+        self.tweets: Dict[int, Dict[str, Union[int, str, List[str]]]]
         self.comments: Dict[int, List[Dict[str, str]]]
         self.retweets: Dict[str, List[int]]
         self.following_list: List[str]
@@ -91,7 +91,7 @@ class TwitterAPI:
             "tags": tags,
             "mentions": mentions,
         }
-        self.tweets.append(tweet)
+        self.tweets[self.tweet_counter] = tweet
         self.tweet_counter += 1
         return tweet
 
@@ -109,7 +109,7 @@ class TwitterAPI:
                 "User not authenticated. Please authenticate before retweeting."
             )
 
-        if not any([tweet["id"] == tweet_id for tweet in self.tweets]):
+        if tweet_id not in self.tweets:
             return {"error": f"Tweet with ID {tweet_id} not found."}
 
         if self.username not in self.retweets:
@@ -136,7 +136,7 @@ class TwitterAPI:
                 "User not authenticated. Please authenticate before commenting."
             )
 
-        if not any([tweet["id"] == tweet_id for tweet in self.tweets]):
+        if tweet_id not in self.tweets:
             return {"error": f"Tweet with ID {tweet_id} not found."}
 
         if tweet_id not in self.comments:
@@ -157,10 +157,10 @@ class TwitterAPI:
         Returns:
             mention_status (str): Status of the mention action.
         """
-        if not any([tweet["id"] == tweet_id for tweet in self.tweets]):
+        if tweet_id not in self.tweets:
             return {"error": f"Tweet with ID {tweet_id} not found."}
 
-        tweet = [tweet for tweet in self.tweets if tweet["id"] == tweet_id][0]
+        tweet = self.tweets[tweet_id]
         tweet["mentions"].extend(mentioned_usernames)
 
         return {"mention_status": "Users mentioned successfully"}
@@ -231,9 +231,9 @@ class TwitterAPI:
             tags (List[str]): List of tags associated with the tweet.
             mentions (List[str]): List of users mentioned in the tweet.
         """
-        if not any([tweet["id"] == tweet_id for tweet in self.tweets]):
+        if tweet_id not in self.tweets:
             return {"error": f"Tweet with ID {tweet_id} not found."}
-        return [tweet for tweet in self.tweets if tweet["id"] == tweet_id][0]
+        return self.tweets[tweet_id]
 
     def get_user_tweets(self, username: str) -> List[Dict[str, Union[int, str, List[str]]]]:
         """
@@ -244,7 +244,7 @@ class TwitterAPI:
         Returns:
             user_tweets (List[Dict]): List of dictionaries, each containing tweet information.
         """
-        return [tweet for tweet in self.tweets if tweet["username"] == username]
+        return [tweet for tweet in self.tweets.values() if tweet["username"] == username]
 
     def search_tweets(self, keyword: str) -> List[Dict[str, Union[int, str, List[str]]]]:
         """
@@ -257,7 +257,7 @@ class TwitterAPI:
         """
         return [
             tweet
-            for tweet in self.tweets
+            for tweet in self.tweets.values()
             if keyword.lower() in tweet["content"].lower()
             or keyword.lower() in [tag.lower() for tag in tweet["tags"]]
         ]
@@ -271,7 +271,7 @@ class TwitterAPI:
         Returns:
             comments (List[Dict]): List of dictionaries, each containing comment information.
         """
-        if not any([tweet["id"] == tweet_id for tweet in self.tweets]):
+        if tweet_id not in self.tweets:
             return {"error": f"Tweet with ID {tweet_id} not found."}
         return self.comments.get(tweet_id, [])
 
@@ -287,7 +287,7 @@ class TwitterAPI:
             retweet_count (int): Number of retweets made by the user.
         """
         tweet_count = len(
-            [tweet for tweet in self.tweets if tweet["username"] == username]
+            [tweet for tweet in self.tweets.values() if tweet["username"] == username]
         )
         following_count = len(self.following_list) if username == self.username else 0
         retweet_count = len(self.retweets.get(username, []))
