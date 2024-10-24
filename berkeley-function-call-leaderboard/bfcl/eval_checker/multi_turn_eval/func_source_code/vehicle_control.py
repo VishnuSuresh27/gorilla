@@ -170,7 +170,7 @@ class VehicleControlAPI:
         """
         Fills the fuel tank of the vehicle. The fuel tank can hold up to 50 gallons.
         Args:
-            fuelAmount (float): The amount of fuel to fill in gallons.
+            fuelAmount (float): The amount of fuel to fill in gallons; this is the additional fuel to add to the tank.
         Returns:
             fuelLevel (float): The fuel level of the vehicle in gallons.
         """
