@@ -183,7 +183,7 @@ class MessageAPI:
         # Generate a unique message ID
         message_id = self.generate_id()
         # Store the message in the inbox
-        self.inbox.append({receiver_id: [message]})
+        self.inbox.append({receiver_id: message})
         self.message_count += 1
         return {
             "sent_status": True,
