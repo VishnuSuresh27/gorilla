@@ -233,7 +233,10 @@ class MessageAPI:
         # Loop through the inbox and collect messages sent by the current user
         for message in self.inbox:
             receiver, message_content = list(message.items())[0]
-            sent_messages[receiver].append(message_content)
+            if receiver not in sent_messages:
+                sent_messages[receiver] = [message_content]
+            else:
+                sent_messages[receiver].append(message_content)
         return {"messages": sent_messages}
 
     def add_contact(self, user_name: str) -> Dict[str, Union[bool, str]]:
