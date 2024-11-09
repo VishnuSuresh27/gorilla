@@ -64,6 +64,8 @@ class BaseHandler:
 
         total_input_token_count: list[list[float]] = []
         total_output_token_count: list[list[float]] = []
+        total_cache_write_token_count: list[list[float]] = []
+        total_cache_read_token_count: list[list[float]] = []
         total_latency: list[list[float]] = []
         all_model_response: list[list] = (
             []
@@ -108,6 +110,8 @@ class BaseHandler:
             current_round_debugging_log: list[dict] = [current_round_message]
             current_round_input_token_count: list[float] = []
             current_round_output_token_count: list[float] = []
+            current_round_cache_write_token_count: list[float] = []
+            current_round_cache_read_token_count: list[float] = []
             current_round_latency: list[float] = []
 
             count = 0
@@ -140,6 +144,8 @@ class BaseHandler:
                 # Process the metadata
                 current_round_input_token_count.append(model_response_data["input_token"])
                 current_round_output_token_count.append(model_response_data["output_token"])
+                current_round_cache_write_token_count.append(model_response_data["cache_write_token_count"])
+                current_round_cache_read_token_count.append(model_response_data["cache_read_token_count"])
                 current_round_latency.append(query_latency)
 
                 # Try decoding the model response
@@ -217,6 +223,8 @@ class BaseHandler:
             all_debugging_log.append(current_round_debugging_log)
             total_input_token_count.append(current_round_input_token_count)
             total_output_token_count.append(current_round_output_token_count)
+            total_cache_write_token_count.append(current_round_cache_write_token_count)
+            total_cache_read_token_count.append(current_round_cache_read_token_count)
             total_latency.append(current_round_latency)
 
             if force_quit:
@@ -227,6 +235,8 @@ class BaseHandler:
             metadata["debugging_log"] = all_debugging_log
         metadata["input_token_count"] = total_input_token_count
         metadata["output_token_count"] = total_output_token_count
+        metadata["cache_write_token_count"] = total_cache_write_token_count
+        metadata["cache_read_token_count"] = total_cache_read_token_count
         metadata["latency"] = total_latency
 
         return all_model_response, metadata
@@ -245,6 +255,8 @@ class BaseHandler:
 
         total_input_token_count: list[list[float]] = []
         total_output_token_count: list[list[float]] = []
+        total_cache_write_token_count: list[list[float]] = []
+        total_cache_read_token_count: list[list[float]] = []
         total_latency: list[list[float]] = []
         all_model_response: list[list] = (
             []
@@ -286,6 +298,8 @@ class BaseHandler:
             current_round_debugging_log: list[dict] = [current_round_message]
             current_round_input_token_count: list[float] = []
             current_round_output_token_count: list[float] = []
+            current_round_cache_write_token_count: list[float] = []
+            current_round_cache_read_token_count: list[float] = []
             current_round_latency: list[float] = []
 
             count = 0
@@ -317,6 +331,8 @@ class BaseHandler:
                 # Process the metadata
                 current_round_input_token_count.append(model_response_data["input_token"])
                 current_round_output_token_count.append(model_response_data["output_token"])
+                current_round_cache_write_token_count.append(model_response_data["cache_write_token_count"])
+                current_round_cache_read_token_count.append(model_response_data["cache_read_token_count"])
                 current_round_latency.append(query_latency)
 
                 # Try decoding the model response
@@ -394,6 +410,8 @@ class BaseHandler:
             all_debugging_log.append(current_round_debugging_log)
             total_input_token_count.append(current_round_input_token_count)
             total_output_token_count.append(current_round_output_token_count)
+            total_cache_write_token_count.append(current_round_cache_write_token_count)
+            total_cache_read_token_count.append(current_round_cache_read_token_count)
             total_latency.append(current_round_latency)
 
             if force_quit:
@@ -404,6 +422,8 @@ class BaseHandler:
             metadata["debugging_log"] = all_debugging_log
         metadata["input_token_count"] = total_input_token_count
         metadata["output_token_count"] = total_output_token_count
+        metadata["cache_write_token_count"] = total_cache_write_token_count
+        metadata["cache_read_token_count"] = total_cache_read_token_count
         metadata["latency"] = total_latency
 
         return all_model_response, metadata

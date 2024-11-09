@@ -3,6 +3,7 @@ import os
 
 from anthropic import Anthropic
 from anthropic.types import TextBlock, ToolUseBlock
+from transformers import GPT2TokenizerFast
 from bfcl.model_handler.base_handler import BaseHandler
 from bfcl.model_handler.constant import DEFAULT_SYSTEM_PROMPT, GORILLA_TO_OPENAPI
 from bfcl.model_handler.model_style import ModelStyle
@@ -74,14 +75,29 @@ class ClaudeHandler(BaseHandler):
             "message": repr(inference_data["message"]),
             "tools": inference_data["tools"],
         }
+    
+        tools = inference_data["tools"]
+        tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
+        total_tool_token_count = 0
 
-        return self.client.messages.create(
+        for tool in tools:
+            tool_text = json.dumps(tool)
+            token_count = len(tokenizer.encode(tool_text))
+            total_tool_token_count += token_count
+
+        if total_tool_token_count >= 1024:
+            tools[-1]['cache_control'] = {'type': 'ephemeral'}
+            print(f"Tool caching applied. Total tokens cached = {total_tool_token_count}")
+        else:
+            print(f"No tool caching applied. Total tool token count was {total_tool_token_count}, less than 1024")
+
+        return self.client.beta.prompt_caching.messages.create(
             model=self.model_name.strip("-FC"),
             max_tokens=(
                 8192 if "claude-3-5-sonnet-20240620" in self.model_name else 4096
-            ),  # 3.5 Sonnet has a higher max token limit
-            tools=inference_data["tools"],
-            messages=inference_data["message"],
+            ),
+            tools=tools,
+            messages=inference_data["message"]
         )
 
     def _pre_query_processing_FC(self, inference_data: dict, test_entry: dict) -> dict:
@@ -129,6 +145,8 @@ class ClaudeHandler(BaseHandler):
             "tool_call_ids": tool_call_ids,
             "input_token": api_response.usage.input_tokens,
             "output_token": api_response.usage.output_tokens,
+            "prompt_write_cache_token_count": getattr(api_response.usage, 'cache_creation_input_tokens', 0),
+            "prompt_read_cache_token_count": getattr(api_response.usage, 'cache_read_input_tokens', 0)
         }
 
     def add_first_turn_message_FC(
@@ -188,16 +206,32 @@ class ClaudeHandler(BaseHandler):
             "system_prompt": inference_data["system_prompt"],
         }
 
-        api_response =  self.client.messages.create(
+        tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
+        system_prompt_text = inference_data["system_prompt"]
+        token_count = len(tokenizer.encode(system_prompt_text))
+        system_prompt = [
+            {
+                "type": "text",
+                "text": system_prompt_text
+            }
+        ]
+        # Decide whether to apply caching based on token count
+        if token_count >= 1024:
+            # Add 'cache_control' to the system prompt
+            system_prompt[0]['cache_control'] = {"type": "ephemeral"}
+            print(f"Caching system prompt with token count: {token_count}")
+        else:
+            print(f"System prompt token count ({token_count}) is less than 1024. No caching applied.")
+
+        api_response = self.client.beta.prompt_caching.messages.create(
             model=self.model_name,
             max_tokens=(
                 8192 if "claude-3-5-sonnet-20240620" in self.model_name else 4096
-            ),  # 3.5 Sonnet has a higher max token limit
+            ),
             temperature=self.temperature,
-            system=inference_data["system_prompt"],
-            messages=inference_data["message"],
+            system=system_prompt,
+            messages=inference_data["message"]
         )
-        
         return api_response
 
     def _pre_query_processing_prompting(self, test_entry: dict) -> dict:
@@ -226,6 +260,8 @@ class ClaudeHandler(BaseHandler):
             "model_responses": api_response.content[0].text,
             "input_token": api_response.usage.input_tokens,
             "output_token": api_response.usage.output_tokens,
+            "prompt_write_cache_token_count": getattr(api_response.usage, 'cache_creation_input_tokens', 0),
+            "prompt_read_cache_token_count": getattr(api_response.usage, 'cache_read_input_tokens', 0),
         }
 
     def add_first_turn_message_prompting(
