@@ -3,7 +3,6 @@ import os
 
 from anthropic import Anthropic
 from anthropic.types import TextBlock, ToolUseBlock
-from transformers import GPT2TokenizerFast
 from bfcl.model_handler.base_handler import BaseHandler
 from bfcl.model_handler.constant import GORILLA_TO_OPENAPI
 from bfcl.model_handler.model_style import ModelStyle
@@ -75,21 +74,17 @@ class ClaudeHandler(BaseHandler):
             "message": repr(inference_data["message"]),
             "tools": inference_data["tools"],
         }
-    
         tools = inference_data["tools"]
-        tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-        total_tool_token_count = 0
-
-        for tool in tools:
-            tool_text = json.dumps(tool)
-            token_count = len(tokenizer.encode(tool_text))
-            total_tool_token_count += token_count
-
-        if total_tool_token_count >= 1024:
-            tools[-1]['cache_control'] = {'type': 'ephemeral'}
-            print(f"Tool caching applied. Total tokens cached = {total_tool_token_count}")
-        else:
-            print(f"No tool caching applied. Total tool token count was {total_tool_token_count}, less than 1024")
+        messages = inference_data["message"]
+        caching_enabled = inference_data["caching_enabled"]
+    
+        if caching_enabled: # Caching will only be enabled for multi_turn categories
+            messages[-1]['content'][0]["cache_control"] = {"type": "ephemeral"} 
+            user_indices = [i for i, item in enumerate(messages) if item['role'] == 'user']  # Keeping the cache control blocks only in the last two user messages.
+            for i in user_indices[:-2]:
+                for content in messages[i]['content']:
+                    if 'cache_control' in content:
+                        del content['cache_control']
 
         return self.client.beta.prompt_caching.messages.create(
             model=self.model_name.strip("-FC"),
@@ -97,7 +92,7 @@ class ClaudeHandler(BaseHandler):
                 8192 if "claude-3-5-sonnet-20240620" in self.model_name else 4096
             ),
             tools=tools,
-            messages=inference_data["message"]
+            messages=messages
         )
 
     def _pre_query_processing_FC(self, inference_data: dict, test_entry: dict) -> dict:
@@ -108,8 +103,12 @@ class ClaudeHandler(BaseHandler):
             test_entry["question"][round_idx] = combine_consecutive_user_prompts(
                 test_entry["question"][round_idx]
             )
-
         inference_data["message"] = []
+
+        test_entry_id: str = test_entry["id"]
+        test_category: str = test_entry_id.rsplit("_", 1)[0]
+        inference_data["caching_enabled"] = 'multi_turn' in test_category #caching_enabled only for multi_turn category
+        
         return inference_data
 
     def _compile_tools(self, inference_data: dict, test_entry: dict) -> dict:
@@ -119,6 +118,9 @@ class ClaudeHandler(BaseHandler):
         functions = func_doc_language_specific_pre_processing(functions, test_category)
         tools = convert_to_tool(functions, GORILLA_TO_OPENAPI, self.model_style)
 
+        if 'multi_turn' in test_category:
+            tools[-1]['cache_control'] = {'type': 'ephemeral'}
+        
         inference_data["tools"] = tools
         
         return inference_data
@@ -138,6 +140,10 @@ class ClaudeHandler(BaseHandler):
         model_responses = tool_call_outputs if tool_call_outputs else text_outputs
 
         model_responses_message_for_chat_history = api_response.content
+        print("input tokens", api_response.usage.input_tokens)
+        print("output tokens", api_response.usage.output_tokens)
+        print("cached write", api_response.usage.cache_creation_input_tokens)
+        print("cached read", api_response.usage.cache_read_input_tokens)
 
         return {
             "model_responses": model_responses,
@@ -152,12 +158,18 @@ class ClaudeHandler(BaseHandler):
     def add_first_turn_message_FC(
         self, inference_data: dict, first_turn_message: list[dict]
     ) -> dict:
+        if isinstance(first_turn_message[0]['content'], str):
+                message_content = [{"type": "text", "text": first_turn_message[0]['content']}]
+                first_turn_message[0]['content'] = message_content
         inference_data["message"].extend(first_turn_message)
         return inference_data
 
     def _add_next_turn_user_message_FC(
         self, inference_data: dict, user_message: list[dict]
     ) -> dict:
+        if isinstance(user_message[0]['content'], str):
+                message_content = [{"type": "text","text": user_message[0]['content']}]
+                user_message[0]['content'] = message_content
         inference_data["message"].extend(user_message)
         return inference_data
 
@@ -205,23 +217,22 @@ class ClaudeHandler(BaseHandler):
             "message": repr(inference_data["message"]),
             "system_prompt": inference_data["system_prompt"],
         }
-
-        tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
         system_prompt_text = inference_data["system_prompt"]
-        token_count = len(tokenizer.encode(system_prompt_text))
-        system_prompt = [
-            {
-                "type": "text",
-                "text": system_prompt_text
-            }
-        ]
-        # Decide whether to apply caching based on token count
-        if token_count >= 1024:
-            # Add 'cache_control' to the system prompt
+        system_prompt = [{"type": "text", "text": system_prompt_text}]
+        messages = inference_data["message"]
+        caching_enabled = inference_data["caching_enabled"]
+
+        if caching_enabled:
+            # Caching system prompt
             system_prompt[0]['cache_control'] = {"type": "ephemeral"}
-            print(f"Caching system prompt with token count: {token_count}")
-        else:
-            print(f"System prompt token count ({token_count}) is less than 1024. No caching applied.")
+
+            # Caching messages
+            messages[-1]['content'][0]["cache_control"] = {"type": "ephemeral"} 
+            user_indices = [i for i, item in enumerate(messages) if item['role'] == 'user']  # Keeping the cache control blocks only in the last two user messages.
+            for i in user_indices[:-2]:
+                for content in messages[i]['content']:
+                    if 'cache_control' in content:
+                        del content['cache_control']
 
         api_response = self.client.beta.prompt_caching.messages.create(
             model=self.model_name,
@@ -230,7 +241,7 @@ class ClaudeHandler(BaseHandler):
             ),
             temperature=self.temperature,
             system=system_prompt,
-            messages=inference_data["message"]
+            messages=messages
         )
         return api_response
 
@@ -252,10 +263,18 @@ class ClaudeHandler(BaseHandler):
             test_entry["question"][round_idx] = combine_consecutive_user_prompts(
                 test_entry["question"][round_idx]
             )
+        
+        test_entry_id: str = test_entry["id"]
+        test_category: str = test_entry_id.rsplit("_", 1)[0]
+        caching_enabled: bool = 'multi_turn' in test_category # caching enabled only for multi_turn category
 
-        return {"message": [], "system_prompt": system_prompt}
+        return {"message": [], "system_prompt": system_prompt, "caching_enabled": caching_enabled}
 
     def _parse_query_response_prompting(self, api_response: any) -> dict:
+        print("input tokens", api_response.usage.input_tokens)
+        print("output tokens", api_response.usage.output_tokens)
+        print("cached write", api_response.usage.cache_creation_input_tokens)
+        print("cached read", api_response.usage.cache_read_input_tokens)
         return {
             "model_responses": api_response.content[0].text,
             "input_token": api_response.usage.input_tokens,
@@ -267,12 +286,18 @@ class ClaudeHandler(BaseHandler):
     def add_first_turn_message_prompting(
         self, inference_data: dict, first_turn_message: list[dict]
     ) -> dict:
+        if isinstance(first_turn_message[0]['content'], str):
+                message_content = [{"type": "text", "text": first_turn_message[0]['content']}]
+                first_turn_message[0]['content'] = message_content
         inference_data["message"].extend(first_turn_message)
         return inference_data
 
     def _add_next_turn_user_message_prompting(
         self, inference_data: dict, user_message: list[dict]
     ) -> dict:
+        if isinstance(user_message[0]['content'], str):
+                message_content = [{"type": "text","text": user_message[0]['content']}]
+                user_message[0]['content'] = message_content
         inference_data["message"].extend(user_message)
         return inference_data
 

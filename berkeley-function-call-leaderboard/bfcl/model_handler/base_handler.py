@@ -1,17 +1,16 @@
 import json
-import os
 import time
 
+from bfcl.constant import RESULT_PATH, VERSION_PREFIX
 from bfcl.eval_checker.multi_turn_eval.multi_turn_utils import (
     execute_multi_turn_func_call,
     is_empty_execute_response,
 )
 from bfcl.model_handler.constant import (
-    MAXIMUM_ROUND_LIMIT,
     DEFAULT_USER_PROMPT_FOR_ADDITIONAL_FUNCTION_FC,
     DEFAULT_USER_PROMPT_FOR_ADDITIONAL_FUNCTION_PROMPTING,
+    MAXIMUM_STEP_LIMIT,
 )
-from bfcl.constant import VERSION_PREFIX
 from bfcl.model_handler.model_style import ModelStyle
 
 
@@ -64,8 +63,6 @@ class BaseHandler:
 
         total_input_token_count: list[list[float]] = []
         total_output_token_count: list[list[float]] = []
-        total_cache_write_token_count: list[list[float]] = []
-        total_cache_read_token_count: list[list[float]] = []
         total_latency: list[list[float]] = []
         all_model_response: list[list] = (
             []
@@ -110,27 +107,27 @@ class BaseHandler:
             current_turn_debugging_log: list[dict] = [current_turn_message]
             current_turn_input_token_count: list[float] = []
             current_turn_output_token_count: list[float] = []
-            current_turn_cache_write_token_count: list[float] = []
-            current_turn_cache_read_token_count: list[float] = []
             current_turn_latency: list[float] = []
 
             count = 0
             while True:
                 print("-" * 100)
                 print(
-                    f"ID: {test_entry_id.rsplit('_', 1)[1]}, Round: {turn_idx}, Count: {count}"
+                    f"ID: {test_entry_id.replace('multi_turn_', '')}, Turn: {turn_idx}, Step: {count}"
                 )
 
                 start_time = time.time()
                 api_response = self._query_FC(inference_data)
                 query_latency = time.time() - start_time
 
-                current_turn_debugging_log.append(
-                    {
-                        "role": "handler_log:inference_input",
-                        "content": inference_data.get("inference_input_log", ""),
-                    }
-                )
+                # This part of logging is disabled by default because it is too verbose and will make the result file extremely large
+                # It is only useful to see if the inference pipeline is working as expected (eg, does it convert all the inputs correctly)
+                # current_turn_debugging_log.append(
+                #     {
+                #         "role": "handler_log:inference_input",
+                #         "content": inference_data.get("inference_input_log", ""),
+                #     }
+                # )
 
                 # Try parsing the model response
                 model_response_data = self._parse_query_response_FC(api_response)
@@ -144,8 +141,6 @@ class BaseHandler:
                 # Process the metadata
                 current_turn_input_token_count.append(model_response_data["input_token"])
                 current_turn_output_token_count.append(model_response_data["output_token"])
-                current_turn_cache_write_token_count.append(model_response_data["cache_write_token_count"])
-                current_turn_cache_read_token_count.append(model_response_data["cache_read_token_count"])
                 current_turn_latency.append(query_latency)
 
                 # Try decoding the model response
@@ -157,7 +152,9 @@ class BaseHandler:
                         current_turn_debugging_log.append(
                             {
                                 "role": "handler_log",
-                                "content": f"Empty response from the model. Proceed to next turn. Model response decoded: {decoded_model_responses}. Model response raw: {model_responses}",
+                                "content": f"Empty response from the model. Proceed to next turn.",
+                                "model response decoded": decoded_model_responses,
+                                "model response raw": model_responses,
                             }
                         )
                         break
@@ -167,7 +164,8 @@ class BaseHandler:
                     current_turn_debugging_log.append(
                         {
                             "role": "handler_log",
-                            "content": f"Error decoding the model response. Proceed to next turn. Error: {e}. Model response: {model_responses}.",
+                            "content": f"Error decoding the model response. Proceed to next turn. Error: {e}.",
+                            "model response raw": model_responses,
                         }
                     )
                     break
@@ -178,7 +176,9 @@ class BaseHandler:
                 current_turn_debugging_log.append(
                     {
                         "role": "handler_log",
-                        "content": f"Decoded: {decoded_model_responses}. Raw: {model_responses}",
+                        "content": "Models output valid functions to execute.",
+                        "model response decoded": decoded_model_responses,
+                        "model response raw": model_responses,
                     }
                 )
 
@@ -207,13 +207,13 @@ class BaseHandler:
                     )
 
                 count += 1
-                # Force quit after too many turns
-                if count > MAXIMUM_ROUND_LIMIT:
+                # Force quit after too many steps
+                if count > MAXIMUM_STEP_LIMIT:
                     force_quit = True
                     current_turn_debugging_log.append(
                         {
                             "role": "handler_log",
-                            "content": f"Model has been forced to quit after {MAXIMUM_ROUND_LIMIT} turns.",
+                            "content": f"Model has been forced to quit after {MAXIMUM_STEP_LIMIT} steps.",
                         }
                     )
                     break
@@ -223,8 +223,6 @@ class BaseHandler:
             all_debugging_log.append(current_turn_debugging_log)
             total_input_token_count.append(current_turn_input_token_count)
             total_output_token_count.append(current_turn_output_token_count)
-            total_cache_write_token_count.append(current_turn_cache_write_token_count)
-            total_cache_read_token_count.append(current_turn_cache_read_token_count)
             total_latency.append(current_turn_latency)
 
             if force_quit:
@@ -235,8 +233,6 @@ class BaseHandler:
             metadata["debugging_log"] = all_debugging_log
         metadata["input_token_count"] = total_input_token_count
         metadata["output_token_count"] = total_output_token_count
-        metadata["cache_write_token_count"] = total_cache_write_token_count
-        metadata["cache_read_token_count"] = total_cache_read_token_count
         metadata["latency"] = total_latency
 
         return all_model_response, metadata
@@ -255,8 +251,6 @@ class BaseHandler:
 
         total_input_token_count: list[list[float]] = []
         total_output_token_count: list[list[float]] = []
-        total_cache_write_token_count: list[list[float]] = []
-        total_cache_read_token_count: list[list[float]] = []
         total_latency: list[list[float]] = []
         all_model_response: list[list] = (
             []
@@ -298,26 +292,27 @@ class BaseHandler:
             current_turn_debugging_log: list[dict] = [current_turn_message]
             current_turn_input_token_count: list[float] = []
             current_turn_output_token_count: list[float] = []
-            current_turn_cache_write_token_count: list[float] = []
-            current_turn_cache_read_token_count: list[float] = []
             current_turn_latency: list[float] = []
 
             count = 0
             while True:
                 print("-" * 100)
                 print(
-                    f"ID: {test_entry_id.rsplit('_', 1)[1]}, Round: {turn_idx}, Count: {count}"
+                    f"ID: {test_entry_id.replace('multi_turn_', '')}, Turn: {turn_idx}, Step: {count}"
                 )
 
                 start_time = time.time()
                 api_response = self._query_prompting(inference_data)
                 query_latency = time.time() - start_time
-                current_turn_debugging_log.append(
-                    {
-                        "role": "handler_log:inference_input",
-                        "content": inference_data["inference_input_log"],
-                    }
-                )
+
+                # This part of logging is disabled by default because it is too verbose and will make the result file extremely large
+                # It is only useful to see if the inference pipeline is working as expected (eg, does it convert all the inputs correctly)
+                # current_turn_debugging_log.append(
+                #     {
+                #         "role": "handler_log:inference_input",
+                #         "content": inference_data["inference_input_log"],
+                #     }
+                # )
 
                 # Try parsing the model response
                 model_response_data = self._parse_query_response_prompting(api_response)
@@ -331,8 +326,6 @@ class BaseHandler:
                 # Process the metadata
                 current_turn_input_token_count.append(model_response_data["input_token"])
                 current_turn_output_token_count.append(model_response_data["output_token"])
-                current_turn_cache_write_token_count.append(model_response_data["cache_write_token_count"])
-                current_turn_cache_read_token_count.append(model_response_data["cache_read_token_count"])
                 current_turn_latency.append(query_latency)
 
                 # Try decoding the model response
@@ -344,7 +337,9 @@ class BaseHandler:
                         current_turn_debugging_log.append(
                             {
                                 "role": "handler_log",
-                                "content": f"Empty response from the model. Proceed to next turn. Model response decoded: {decoded_model_responses}. Model response raw: {model_responses}",
+                                "content": f"Empty response from the model. Proceed to next turn.",
+                                "model response decoded": decoded_model_responses,
+                                "model response raw": model_responses,
                             }
                         )
                         break
@@ -354,7 +349,8 @@ class BaseHandler:
                     current_turn_debugging_log.append(
                         {
                             "role": "handler_log",
-                            "content": f"Error decoding the model response. Proceed to next turn. Error: {e}. Model response: {model_responses}.",
+                            "content": f"Error decoding the model response. Proceed to next turn. Error: {e}.",
+                            "model response raw": model_responses,
                         }
                     )
                     break
@@ -365,7 +361,9 @@ class BaseHandler:
                 current_turn_debugging_log.append(
                     {
                         "role": "handler_log",
-                        "content": f"Decoded: {decoded_model_responses}. Raw: {model_responses}",
+                        "content": "Models output valid functions to execute.",
+                        "model response decoded": decoded_model_responses,
+                        "model response raw": model_responses,
                     }
                 )
 
@@ -394,13 +392,13 @@ class BaseHandler:
                     )
 
                 count += 1
-                # Force quit after too many turns
-                if count > MAXIMUM_ROUND_LIMIT:
+                # Force quit after too many steps
+                if count > MAXIMUM_STEP_LIMIT:
                     force_quit = True
                     current_turn_debugging_log.append(
                         {
                             "role": "handler_log",
-                            "content": f"Model has been forced to quit after {MAXIMUM_ROUND_LIMIT} turns.",
+                            "content": f"Model has been forced to quit after {MAXIMUM_STEP_LIMIT} steps.",
                         }
                     )
                     break
@@ -410,8 +408,6 @@ class BaseHandler:
             all_debugging_log.append(current_turn_debugging_log)
             total_input_token_count.append(current_turn_input_token_count)
             total_output_token_count.append(current_turn_output_token_count)
-            total_cache_write_token_count.append(current_turn_cache_write_token_count)
-            total_cache_read_token_count.append(current_turn_cache_read_token_count)
             total_latency.append(current_turn_latency)
 
             if force_quit:
@@ -422,8 +418,6 @@ class BaseHandler:
             metadata["debugging_log"] = all_debugging_log
         metadata["input_token_count"] = total_input_token_count
         metadata["output_token_count"] = total_output_token_count
-        metadata["cache_write_token_count"] = total_cache_write_token_count
-        metadata["cache_read_token_count"] = total_cache_read_token_count
         metadata["latency"] = total_latency
 
         return all_model_response, metadata
@@ -500,7 +494,8 @@ class BaseHandler:
 
     def write(self, result):
         model_name_dir = self.model_name.replace("/", "_")
-        os.makedirs(f"./result/{model_name_dir}", exist_ok=True)
+        model_result_dir = RESULT_PATH / model_name_dir
+        model_result_dir.mkdir(parents=True, exist_ok=True)
 
         if type(result) is dict:
             result = [result]
@@ -508,7 +503,7 @@ class BaseHandler:
         for entry in result:
             test_category = entry["id"].rsplit("_", 1)[0]
             file_to_write = f"{VERSION_PREFIX}_{test_category}_result.json"
-            file_to_write = f"./result/{model_name_dir}/{file_to_write}"
+            file_to_write = model_result_dir / file_to_write
             with open(file_to_write, "a+") as f:
                 try:
                     f.write(json.dumps(entry) + "\n")
